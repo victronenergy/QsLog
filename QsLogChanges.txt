@@ -1,4 +1,12 @@
 -------------------
+QsLog version 2.0b4
+Fixes:
+Fixed file name case error for Linux.
+
+Misc:
+* Moved to separate git repository.
+
+-------------------
 QsLog version 2.0b3
 
 Changes:
