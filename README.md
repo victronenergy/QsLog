@@ -21,6 +21,7 @@ QsLog is an easy to use logger that  is based on Qt's QDebug class.
 
 ### Disabling logging ###
 Sometimes it's necessary to turn off logging. This can be done in several ways:
+
 * globally, at compile time, by enabling the QS_LOG_DISABLE macro in the supplied .pri file.
 * globally, at run time, by setting the log level to "OffLevel".
 * per file, at compile time, by including QsLogDisableForThisFile.h in the target file.
