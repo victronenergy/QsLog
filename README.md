@@ -1,5 +1,9 @@
 ## QsLog - the simple Qt logger ##
-QsLog is an easy to use logger that  is based on Qt's QDebug class.
+QsLog is an easy to use logger that is based on Qt's QDebug class. QsLog is released as open source, under the MIT license. 
+
+###Contribution policy###
+Bug fixes are welcome, larger changes however are not encouraged at this point due to the lack of time on my side for reviewing and integrating them. Your best bet in this case would be to open a ticket for your change or forking the project and implementing your change there, with the possibility of having it integrated in the future. 
+All contributions will be credited, license of the contributions should be MIT. 
 
 ### Features ###
 * Six logging levels (from trace to fatal)
