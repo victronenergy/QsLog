@@ -33,7 +33,6 @@
 #include <QVector>
 #include <QDateTime>
 #include <QtGlobal>
-#include <cassert>
 #include <cstdlib>
 #include <stdexcept>
 
@@ -55,147 +54,147 @@ static Logger* sInstance = 0;
 
 static const char* LevelToText(Level theLevel)
 {
-    switch (theLevel) {
-        case TraceLevel:
-            return TraceString;
-        case DebugLevel:
-            return DebugString;
-        case InfoLevel:
-            return InfoString;
-        case WarnLevel:
-            return WarnString;
-        case ErrorLevel:
-            return ErrorString;
-        case FatalLevel:
-            return FatalString;
-        case OffLevel:
-            return "";
-        default: {
-            assert(!"bad log level");
-            return InfoString;
-        }
-    }
+	switch (theLevel) {
+		case TraceLevel:
+			return TraceString;
+		case DebugLevel:
+			return DebugString;
+		case InfoLevel:
+			return InfoString;
+		case WarnLevel:
+			return WarnString;
+		case ErrorLevel:
+			return ErrorString;
+		case FatalLevel:
+			return FatalString;
+		case OffLevel:
+			return "";
+		default: {
+			Q_ASSERT(!"bad log level");
+			return InfoString;
+		}
+	}
 }
 
 #ifdef QS_LOG_SEPARATE_THREAD
 class LogWriterRunnable : public QRunnable
 {
 public:
-    LogWriterRunnable(QString message, Level level);
-    virtual void run();
+	LogWriterRunnable(QString message, Level level);
+	virtual void run();
 
 private:
-    QString mMessage;
-    Level mLevel;
+	QString mMessage;
+	Level mLevel;
 };
 #endif
 
 class LoggerImpl
 {
 public:
-    LoggerImpl();
+	LoggerImpl();
 
 #ifdef QS_LOG_SEPARATE_THREAD
-    QThreadPool threadPool;
+	QThreadPool threadPool;
 #endif
-    QMutex logMutex;
-    Level level;
-    DestinationList destList;
+	QMutex logMutex;
+	Level level;
+	DestinationList destList;
 	bool includeTimeStamp;
 	bool includeLogLevel;
 };
 
 #ifdef QS_LOG_SEPARATE_THREAD
 LogWriterRunnable::LogWriterRunnable(QString message, Level level)
-    : QRunnable()
-    , mMessage(message)
-    , mLevel(level)
+	: QRunnable()
+	, mMessage(message)
+	, mLevel(level)
 {
 }
 
 void LogWriterRunnable::run()
 {
-    Logger::instance().write(mMessage, mLevel);
+	Logger::instance().write(mMessage, mLevel);
 }
 #endif
 
 
 LoggerImpl::LoggerImpl()
-    : level(InfoLevel)
+	: level(InfoLevel)
 	, includeTimeStamp(true)
 	, includeLogLevel(true)
 {
-    // assume at least file + console
-    destList.reserve(2);
+	// assume at least file + console
+	destList.reserve(2);
 #ifdef QS_LOG_SEPARATE_THREAD
-    threadPool.setMaxThreadCount(1);
-    threadPool.setExpiryTimeout(-1);
+	threadPool.setMaxThreadCount(1);
+	threadPool.setExpiryTimeout(-1);
 #endif
 }
 
 
 Logger::Logger()
-    : d(new LoggerImpl)
+	: d(new LoggerImpl)
 {
 }
 
 Logger& Logger::instance()
 {
-    if (!sInstance)
-        sInstance = new Logger;
+	if (!sInstance)
+		sInstance = new Logger;
 
-    return *sInstance;
+	return *sInstance;
 }
 
 void Logger::destroyInstance()
 {
-    delete sInstance;
-    sInstance = 0;
+	delete sInstance;
+	sInstance = 0;
 }
 
 // tries to extract the level from a string log message. If available, conversionSucceeded will
 // contain the conversion result.
 Level Logger::levelFromLogMessage(const QString& logMessage, bool* conversionSucceeded)
 {
-    if (conversionSucceeded)
-        *conversionSucceeded = true;
+	if (conversionSucceeded)
+		*conversionSucceeded = true;
 
-    if (logMessage.startsWith(QLatin1String(TraceString)))
-        return TraceLevel;
-    if (logMessage.startsWith(QLatin1String(DebugString)))
-        return DebugLevel;
-    if (logMessage.startsWith(QLatin1String(InfoString)))
-        return InfoLevel;
-    if (logMessage.startsWith(QLatin1String(WarnString)))
-        return WarnLevel;
-    if (logMessage.startsWith(QLatin1String(ErrorString)))
-        return ErrorLevel;
-    if (logMessage.startsWith(QLatin1String(FatalString)))
-        return FatalLevel;
+	if (logMessage.startsWith(QLatin1String(TraceString)))
+		return TraceLevel;
+	if (logMessage.startsWith(QLatin1String(DebugString)))
+		return DebugLevel;
+	if (logMessage.startsWith(QLatin1String(InfoString)))
+		return InfoLevel;
+	if (logMessage.startsWith(QLatin1String(WarnString)))
+		return WarnLevel;
+	if (logMessage.startsWith(QLatin1String(ErrorString)))
+		return ErrorLevel;
+	if (logMessage.startsWith(QLatin1String(FatalString)))
+		return FatalLevel;
 
-    if (conversionSucceeded)
-        *conversionSucceeded = false;
-    return OffLevel;
+	if (conversionSucceeded)
+		*conversionSucceeded = false;
+	return OffLevel;
 }
 
 Logger::~Logger()
 {
 #ifdef QS_LOG_SEPARATE_THREAD
-    d->threadPool.waitForDone();
+	d->threadPool.waitForDone();
 #endif
-    delete d;
-    d = 0;
+	delete d;
+	d = 0;
 }
 
 void Logger::addDestination(DestinationPtr destination)
 {
-    assert(destination.data());
-    d->destList.push_back(destination);
+	Q_ASSERT(destination.data());
+	d->destList.push_back(destination);
 }
 
 void Logger::setLoggingLevel(Level newLevel)
 {
-    d->level = newLevel;
+	d->level = newLevel;
 }
 
 Level Logger::loggingLevel() const
@@ -226,7 +225,7 @@ bool Logger::includeLogLevel() const
 //! creates the complete log message and passes it to the logger
 void Logger::Helper::writeToLog()
 {
-    const char* const levelName = LevelToText(level);
+	const char* const levelName = LevelToText(level);
 	QString completeMessage;
 	Logger &logger = Logger::instance();
 	if (logger.includeLogLevel()) {
@@ -240,29 +239,29 @@ void Logger::Helper::writeToLog()
 				append(' ');
 	}
 	completeMessage.append(buffer);
-    Logger::instance().enqueueWrite(completeMessage, level);
+	Logger::instance().enqueueWrite(completeMessage, level);
 }
 
 Logger::Helper::~Helper()
 {
-    try {
-        writeToLog();
-    }
-    catch(std::exception&) {
-        // you shouldn't throw exceptions from a sink
-        assert(!"exception in logger helper destructor");
-        throw;
-    }
+	try {
+		writeToLog();
+	}
+	catch(std::exception&) {
+		// you shouldn't throw exceptions from a sink
+		Q_ASSERT(!"exception in logger helper destructor");
+		throw;
+	}
 }
 
 //! directs the message to the task queue or writes it directly
 void Logger::enqueueWrite(const QString& message, Level level)
 {
 #ifdef QS_LOG_SEPARATE_THREAD
-    LogWriterRunnable *r = new LogWriterRunnable(message, level);
-    d->threadPool.start(r);
+	LogWriterRunnable *r = new LogWriterRunnable(message, level);
+	d->threadPool.start(r);
 #else
-    write(message, level);
+	write(message, level);
 #endif
 }
 
@@ -270,11 +269,11 @@ void Logger::enqueueWrite(const QString& message, Level level)
 //! it's useful for processing in the destination.
 void Logger::write(const QString& message, Level level)
 {
-    QMutexLocker lock(&d->logMutex);
-    for (DestinationList::iterator it = d->destList.begin(),
-        endIt = d->destList.end();it != endIt;++it) {
-        (*it)->write(message, level);
-    }
+	QMutexLocker lock(&d->logMutex);
+	for (DestinationList::iterator it = d->destList.begin(),
+		endIt = d->destList.end();it != endIt;++it) {
+		(*it)->write(message, level);
+	}
 }
 
 } // end namespace
