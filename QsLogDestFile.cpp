@@ -29,6 +29,12 @@
 #include <QtGlobal>
 #include <iostream>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+namespace Qt {
+static const QTextStreamFunction endl = ::endl;
+}
+#endif
+
 const int QsLogging::SizeRotationStrategy::MaxBackupCount = 10;
 
 QsLogging::RotationStrategy::~RotationStrategy()
@@ -144,7 +150,7 @@ void QsLogging::FileDestination::write(const QString& message, Level)
         mOutputStream.setDevice(&mFile);
     }
 
-    mOutputStream << message << endl;
+    mOutputStream << message << Qt::endl;
     mOutputStream.flush();
 }
 
