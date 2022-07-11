@@ -48,7 +48,7 @@ static const char ErrorString[] = "ERROR";
 static const char FatalString[] = "FATAL";
 
 // not using Qt::ISODate because we need the milliseconds too
-static const QString fmtDateTime("yyyy-MM-ddThh:mm:ss.zzz");
+static const QString fmtDateTime("yyyy-MM-dd hh:mm:ss.zzz");
 
 static Logger* sInstance = 0;
 

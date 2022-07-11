@@ -13,6 +13,8 @@ DESTDIR = $$PWD/build-QsLogShared
 OBJECTS_DIR = $$DESTDIR/obj
 MOC_DIR = $$DESTDIR/moc
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
 win32 {
     DEFINES += QSLOG_IS_SHARED_LIBRARY
 }
