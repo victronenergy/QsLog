@@ -4,6 +4,7 @@ include(QsLog.pri)
 TARGET = QsLog
 VERSION = "2.0.0"
 QT -= gui
+QT += core5compat
 CONFIG -= console
 CONFIG -= app_bundle
 CONFIG += shared
