@@ -43,8 +43,8 @@ namespace QsLogging
 class DebugOutputDestination : public Destination
 {
 public:
-    virtual void write(const QString& message, Level level);
-    virtual bool isValid();
+    void write(const QString& message, Level level) override;
+    bool isValid() override;
 };
 
 }
